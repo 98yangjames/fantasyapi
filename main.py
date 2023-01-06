@@ -73,6 +73,7 @@ def get_all_players(lineups):
     ranks = []
     position = []
     for players in lineups:
+        
         for player in players:
             names.append(player.name)
             project.append(player.projected_points)
@@ -116,14 +117,32 @@ def data_pull():
     
 
 def generate_projected_vs_expected(dataframe, name):    
-    hovertemplate = "Player: %{customdata[0]} <br>Actual Avg Points:%{customdata[1]}: <br>Projected Points: %{customdata[2]} <br>Point Residuals: %{customdata[3]} <br>Team: %{customdata[4]} </br>"
-    plot = px.scatter(dataframe, x = 'Actual_Points', y = 'Point-Residuals', color = 'Team', title = 'Projected vs. Distance from Expectation for ' + name, custom_data=['Player', 'Actual_Points','Expected_Points','Point-Residuals', 'Team'], color_discrete_sequence=px.colors.qualitative.Dark24)
+    hovertemplate = "Player: %{customdata[0]} <br>Actual Avg Points:%{customdata[1]}: <br>Projected Points: %{customdata[2]} <br>Point Residuals: %{customdata[3]} <br>Team: %{customdata[4]} <br> Week: %{customdata[5]} </br>"
+    plot = px.scatter(dataframe, x = 'Actual_Points', y = 'Point-Residuals', color = 'Team', title = 'Projected vs. Distance from Expectation for ' + name, custom_data=['Player', 'Total_Actual','Total_Expected','Point-Residuals', 'Team', 'Week'], color_discrete_sequence=px.colors.qualitative.Dark24)
     plot.update_layout(xaxis_title = 'Actual Avg Points', yaxis_title = 'Point Residuals', plot_bgcolor = 'grey')
     plot.update_traces(hovertemplate = hovertemplate)
     # plot.update_xaxes(showgrid = False)
     # plot.update_yaxes(showgrid = False)
     plot.add_hline(y=dataframe['Point-Residuals'].mean(), line_color = 'red')
     # plot.add_hline(y=rb_df['Projected_Points'].mean(), line_color = 'yellow')
+    if name == 'D/ST':
+        name = 'DST'
+        plot.write_html("Data/" + name + ".html")
+    plot.write_html("Data/" + name + ".html")
+    plot.show()
+
+def generate_actual_projected(dataframe, name):    
+    hovertemplate = "Player: %{customdata[0]} <br>Actual Points:%{customdata[1]}: <br>Projected Points: %{customdata[2]} <br>Point Residuals: %{customdata[3]} <br>Team: %{customdata[4]} <br> Week: %{customdata[5]} </br>"
+    plot = px.scatter(dataframe, x = 'Week', y = 'Actual_Points', color = 'Team', title = 'Projected vs. Distance from Expectation for ' + name, custom_data=['Player', 'Actual_Points','Projected_Points','Point-Residuals', 'Team', 'Week'], color_discrete_sequence=px.colors.qualitative.Dark24)
+    plot.update_layout(xaxis_title = 'Week', yaxis_title = 'Actual_Points', plot_bgcolor = 'grey')
+    plot.update_traces(hovertemplate = hovertemplate)
+    # plot.update_xaxes(showgrid = False)
+    # plot.update_yaxes(showgrid = False)
+    plot.add_hline(y=dataframe['Actual_Points'].mean(), line_color = 'red')
+    # plot.add_hline(y=rb_df['Projected_Points'].mean(), line_color = 'yellow')
+    if name == 'D/ST':
+        name = 'DST'
+        plot.write_html("Data/" + name + ".html")
     plot.write_html("Data/" + name + ".html")
     plot.show()
 
@@ -149,9 +168,9 @@ def k_nearest_neighbor(players):
     players_encoded = le.fit_transform(players['Player'])
     rank_encoded = le.fit_transform(players['Rank'])
     labels = le.fit_transform(players['Actual_Points'])
-    
+    expected_encoded = le.fit_transform(players['Expected_Points'])
     # --- features being used ---#  
-    features = list(zip(players_encoded, position_encoded, rank_encoded))
+    features = list(zip(players_encoded, position_encoded, rank_encoded, expected_encoded))
     from sklearn.neighbors import KNeighborsClassifier
 
     from sklearn.model_selection import train_test_split
@@ -165,23 +184,30 @@ def k_nearest_neighbor(players):
     from sklearn import metrics
     # Model Accuracy, how often is the classifier correct?
     print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
-    k_nearest_neighbor_plot(y_pred)
+    # k_nearest_neighbor_plot(y_pred)
 
 def main():
     # data_pull()
-    players = pd.read_csv('Data/current_players.csv')
+    players = pd.read_csv('Data/player_projections.csv')
+    players = players.round(2)
     # print(players)
-    print(players.groupby(['Team', 'Week', 'Player', 'Position'], as_index=False).mean())
 
-    players = add_point_residuals(players)
-    players = players.groupby(['Team', 'Week', 'Player', 'Position'], as_index=False).mean().round(2)
+    # players = add_point_residuals(players)
+    # players = players.groupby(['Team', 'Week', 'Player', 'Position'], as_index=False).mean().round(2)
 
-    #--- this generates the unique player vs expected graph ---#
+    # #--- this generates the unique player vs expected graph ---#
     # for position in players['Position'].unique():
     #     generate_projected_vs_expected(players[players['Position'] == position], position)
+    for position in players['Position'].unique():
+        generate_actual_projected(players[players['Position'] == position], position)
 
-    #--- run a k-nearest neighbor ---#
-    k_nearest_neighbor(players)
+    # #--- run a k-nearest neighbor ---#
+    # import seaborn as sns
+    # corr = players.corr()
+    # sns.heatmap(corr, 
+    #         xticklabels=corr.columns,
+    #         yticklabels=corr.columns).get_figure().savefig('output.png')
+    # k_nearest_neighbor(players)
 
 
 main()
