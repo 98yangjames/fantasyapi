@@ -5,7 +5,7 @@
 from espn_api.football import League
 import pandas as pd
 
-league_id = 42936131 #Example: https://fantasy.espn.com/football/team?leagueId=829963546&seasonId=2022&teamId=1&fromTeamId=1
+league_id = 42936131 #Example: https://fantasy.espn.com/football/team?leagueId=829963546&seasonId=2022&teamId=1&fromTeamId=1 #42936131
 year = 2022
 league = League(league_id=league_id, year=year)
 
@@ -72,7 +72,7 @@ def get_player_stats():
 
     #1. Get the lineups that each team plays.
     lineups = []
-    for i in range(1, 16):
+    for i in range(1, 18):
         box_scores = league.box_scores(i)
         for j in range(len(box_scores)):
             lineups.append(box_scores[j].away_lineup)
@@ -84,7 +84,7 @@ def get_player_stats():
     actual = []
     ranks = []
     position = []
-    for i in range(16):
+    for i in range(18):
         league.current_week = i
         for players in lineups:
             for player in players:
