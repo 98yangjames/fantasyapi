@@ -5,7 +5,7 @@ This repo documents pulling data from fantasy football with your league through 
 For the espn api: https://github.com/cwendt94/espn-api
 
 # How to run
-****generate_fantasy_players.py**** - file that generates the general data with who drafted what and what round/pick they got them at. It should produce in the Data folder current_players.csv and drafted_players.csv. The current_players.csv is only relevant during the middle of the season, because rosters are gonna change. 
+****generate_fantasy_players.py**** - file that generates the general data with who drafted what and what round/pick they got them at. It should produce in the Data folder current_players.csv and drafted_players.csv. The current_players.csv is only relevant during the middle of the season, because rosters are gonna change. You can change the league id at the top to associate with your league.
 
 NOTE: You need to run generate_fantasy_players.py first as it creates a foundational set of csvs.
 
