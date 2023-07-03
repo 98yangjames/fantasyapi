@@ -26,7 +26,7 @@ if os.path.isfile('Data/fantasy_league_data/Average_Points_By_Ownership.csv'):
 
 if os.path.isfile('Data/fantasy_league_data/weighted_sum_of_residuals.csv'):
     df = pd.read_csv('Data/fantasy_league_data/weighted_sum_of_residuals.csv').round(2)
-    fig = px.scatter(df, x=df['Team'], y=df['Weighted Sum'], color=df['Weighted Sum'], title='Overall weighted score given ownerships (in weeks)')
+    fig = px.scatter(df, x=df['Team'], y=df['Weighted Sum'], color=df['Weighted Sum'], title='Overall weighted score given ownerships (in weeks)', )
     fig.add_hline(df['Weighted Sum'].mean(), line_color='Red', line_dash = 'dash')
     fig.update_traces(marker_line_color="black")
     fig.write_html('Data/cool_plots/weighted_sum_analysis.html')
