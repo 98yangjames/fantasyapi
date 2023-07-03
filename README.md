@@ -13,4 +13,6 @@ NOTE: You need to run generate_fantasy_players.py first as it creates a foundati
 
 ****generate_cool_plots.py**** - file that generates the cool plots in the Data folder. They are htmls that are interactive through plotly. 
 
+****generate_loss_per_team.py**** this calculates a simple weight associated with ownership. Score = SUM_x( (ownership_x/17) * Residual_x) ) 
+
 ****draft notebooks folder**** - this is just spam that I worked on. Don't worry about it.
