@@ -13,4 +13,4 @@ for team in stats_of_players_df['Team'].unique():
 output_df = pd.DataFrame(team_and_weighted_residual)
 output_df.columns = ['Team', 'Weighted Sum']
 
-output_df.sort_values('Weighted Sum').to_csv('Data/fantasy_league_data/weighted_sum_of_residuals.csv')
+output_df.sort_values('Weighted Sum', ascending=False).to_csv('Data/fantasy_league_data/weighted_sum_of_residuals.csv')
