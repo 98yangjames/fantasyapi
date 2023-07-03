@@ -4,6 +4,7 @@ stats_of_players_df = pd.read_csv('Data/fantasy_league_data/Average_Points_By_Ow
 
 stats_of_players_df['Weight of Ownership'] = stats_of_players_df['Length of Ownership'] / 17
 stats_of_players_df['Weighted Residual'] = stats_of_players_df['Residual'] * stats_of_players_df['Weight of Ownership']
+stats_of_players_df.to_csv('Data/fantasy_league_data/Average_Points_By_Ownership_Weighted.csv')
 
 team_and_weighted_residual = []
 for team in stats_of_players_df['Team'].unique():    
